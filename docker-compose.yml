@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  dante:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER: 'john'
+        PASS: 'MyPassword'
+    ports:
+      - "80:1080"
+    volumes:
+      - "./sockd.conf:/etc/sockd.conf"
+    restart: always
