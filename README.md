@@ -5,7 +5,6 @@
 ## Quickstart
 
 Ниже приведена инструкция по подъему SOCKS5 прокси.
-Единственное требование - наличие [белого](https://help.keenetic.net/hc/ru/articles/213965789-В-чем-отличие-белого-и-серого-IP-адреса-) IP. 
 
 1. Установите Docker engine.
    
@@ -18,30 +17,38 @@
 2. Склонируйте данный репозиторий
 
    ```bash
-   git clone https://github.com/elejke/docker-socks5.git
+   git clone https://github.com/vanitoo/docker-socks5.git
    cd docker-socks5
    ```
-   
-3. Соберите Docker-образ
 
+3. Запуск через docker-compose.yml
+   Запускаем Docker-образ:
+   ```bash
+   sudo docker compose up -d
+   ```
+   
+4. Запуск через Dockerfile
+   Собираем и запускам образ
    ```bash
    sudo docker build -t socks5 .
-   ```
-   
-   Если вы хотите использовать логин и пароль для своего сервера, то исправьте соответствующую строчку в [Dockerfile](Dockerfile#L4) на желаемую пару логин/пароль.
-   
-4. Запустите Docker-образ:
-
-   ```bash
    sudo docker run -d -p 1080:1080 socks5
    ```
-   Если вы хотите использовать логин/пароль для своего прокси, то надо также добавить файл конфигурации в Docker-контейнер, что делается добавлением опции при запуске:
+
+5. Если вы хотите использовать логин/пароль для своего прокси, то надо также добавить файл конфигурации в Docker-контейнер, что делается добавлением опции при запуске:
    
    ```bash
    sudo docker run -d -p 1080:1080 -v ${PWD}/sockd.conf:/etc/sockd.conf socks5
    ```
+  
+6. Проверка
+   без пароля
+   ```bash
+   curl --proxy socks5://localhost:1081 https://2ip.ru
+   ```
+   с паролем
+   ```bash
+   curl --proxy socks5://myuser:mypassword@localhost:1081 https://2ip.ru
+   ```
    
-   При этом будут использованы логин/пароль указанные на шаге 3.
-   
-5. Ваш прокси-сервер готов!
+7. Ваш прокси-сервер готов!
 
