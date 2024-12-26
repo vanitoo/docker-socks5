@@ -1,15 +1,16 @@
 version: '3.8'
 
 services:
-  dante:
+  dante-server:
     build:
       context: .
-      dockerfile: Dockerfile
       args:
-        USER: 'john'
-        PASS: 'MyPassword'
+        USERNAME: myUser      # Имя пользователя
+        PASSWORD: myPassword  # Пароль (если USE_PASSWORD=true)
+        USE_PASSWORD: "false" # Установите "true" для создания пользователя с паролем, "false" — без пароля
     ports:
-      - "80:1080"
+      - "1081:1080"           # Порт публикации
     volumes:
-      - "./sockd.conf:/etc/sockd.conf"
-    restart: always
+      - ./sockd.conf:/etc/sockd.conf
+    restart: unless-stopped
+
