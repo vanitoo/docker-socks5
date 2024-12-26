@@ -1,12 +1,25 @@
 FROM wernight/dante
 
-# Используем аргументы для задания переменных окружения
-ARG USER
-ARG PASS
+# Копируем конфиг для Dante
+COPY sockd.conf /etc/sockd.conf
 
-# Устанавливаем переменные окружения для использования в RUN команде
-ENV USER ${USER}
-ENV PASS ${PASS}
+# Создаём пользователя с паролем
+ARG USERNAME=myUser
+ARG PASSWORD=myPassword
+ARG USE_PASSWORD=false
 
-# Добавляем пользователя с указанными аргументами
-RUN printf "${PASS}\n${PASS}\n" | adduser ${USER}
+
+# Создаем пользователя с паролем или без, в зависимости от значения USE_PASSWORD
+RUN if [ "$USE_PASSWORD" = "true" ]; then \
+        adduser --disabled-password --gecos "" $USERNAME && \
+        echo "$USERNAME:$PASSWORD" | chpasswd; \
+    else \
+        adduser --disabled-password --gecos "" $USERNAME; \
+    fi
+
+
+# Открываем порт для SOCKS5
+EXPOSE 1080
+
+# Запускаем Dante
+CMD ["sockd", "-f", "/etc/sockd.conf"]
